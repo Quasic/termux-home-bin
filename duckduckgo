@@ -1,0 +1,3 @@
+#!/data/data/com.termux/files/usr/bin/sh
+/data/data/com.termux/files/home/bin/termux-url-opener https://duckduckgo.com/?q=$(echo "$*"|sed 's/ /+/g')
+
