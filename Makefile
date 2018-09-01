@@ -5,7 +5,7 @@ handlers:
 	sh install.sh
 	
 duckduckgo:
-	cp duckduckgo "$PREFIX/bin/duckduckgo"
-	chmod +x "$PREFIX/bin/duckduckgo"
+	cp duckduckgo.sh "${PREFIX}/bin/duckduckgo"
+	chmod +x "${PREFIX}/bin/duckduckgo"
 
 all: handlers duckduckgo
