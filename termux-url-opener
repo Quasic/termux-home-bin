@@ -1,0 +1,50 @@
+#!/data/data/com.termux/files/usr/bin/bash
+cd ~/downloads
+TMPFILE=dialog.tmp
+function a {
+if which "$1"
+then
+	M[${#M[*]}]="${3:-$1}"
+	M[${#M[*]}]="${2:-$1}"
+fi
+}
+a w3m 'w3m pager/browser'
+if [[ $0 =~ -file-editor$ ]]; then
+	T=file
+	a sensible-editor
+	a nano Nano
+	a ne 'The Nice Editor'
+	a mcedit 'Midnight Commander editor'
+	a vim 'Vi iMproved'
+	a vi 'Viewer/Editor'
+	a termux-share 'edit in app' 'termux-share -a edit'
+	a termux-share 'send to app' 'termux-share -a send'
+	a termux-share 'view in app'
+	a sensible-pager
+	a more 'more viewer'
+	a less 'less viewer'
+elif [[ $0 =~ -url-opener$ ]]; then
+	T=url
+	a sensible-browser
+	a elinks
+	a lynx
+	a termux-share 'send as text via termux-share' 'termux-share -a send <<<'
+	a termux-open-url 'select app'
+	if [[ $1 =~ ^(ht|f)tp: ]] || ! [[ "$(wget 2>&1)" =~ ^BusyBox ]]
+	then
+		a wget 'download with wget'
+	fi
+	#a curl 'download with curl' 'curl ?'
+else
+	T=unknown
+fi
+dialog --title "Select Action" --menu "What to do with $T $1" 0 0 0 "${M[@]}" echo test 2>$TMPFILE
+if [ $? = 0 ]
+then eval "$(< $TMPFILE) $1"
+elif [ -s $TMPFILE ]
+then
+	echo Dialog error:
+	cat $TMPFILE
+fi
+rm $TMPFILE
+
