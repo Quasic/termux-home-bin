@@ -21,6 +21,7 @@ if [[ $0 =~ -file-editor$ ]]; then
 	a sensible-pager
 	a more 'more viewer'
 	a less 'less viewer'
+	a proj 'add to project' 'proj file ""'
 	a termux-share 'edit in app' 'termux-share -a edit'
 	a termux-share 'send to app' 'termux-share -a send'
 	a termux-share 'view in app'
@@ -29,6 +30,7 @@ elif [[ $0 =~ -url-opener$ ]]; then
 	a sensible-browser
 	a elinks
 	a lynx
+	a proj bookmark 'proj url ""'
 	if [[ $1 =~ ^(ht|f)tp: ]] || ! [[ "$(wget 2>&1)" =~ ^BusyBox ]]
 	then
 		a wget 'download with wget'

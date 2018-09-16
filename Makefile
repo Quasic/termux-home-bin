@@ -8,4 +8,8 @@ duckduckgo:
 	cp duckduckgo.sh "${PREFIX}/bin/duckduckgo"
 	chmod +x "${PREFIX}/bin/duckduckgo"
 
-all: handlers duckduckgo
+proj:
+	cp proj.sh "${PREFIX}/bin/proj"
+	chmod +x "${PREFIX}/bin/proj"
+
+all: handlers duckduckgo proj
