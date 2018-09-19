@@ -1,6 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-v=0.6
-#2.0 should support git like pass does
+v=0.7
 h="$HOME/proj"
 c="$(basename "$0")"
 mkdir -p "$h"
@@ -34,7 +33,18 @@ then
 	echo "$c file <proj> <path> [name] # mv file into project space"
 	echo "$c edit <proj> <name>"
 	echo "$c url <proj> <url>"
+	echo "$c git ..."
 	echo "$c version"
+elif [[ "$1" == "git" ]]
+then
+	cd "$h"
+	if [ -d .git ]
+	then
+		shift
+		git $*
+	else
+		echo "Not a git repository. Please run $0 git init, first."
+	fi
 elif [[ "$1" == "version" ]]
 then
 	echo "proj (as $c) version $v working in $h"
