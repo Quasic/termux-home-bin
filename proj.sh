@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-v=0.5
+v=0.6
 #2.0 should support git like pass does
 h="$HOME/proj"
 c="$(basename "$0")"
@@ -82,9 +82,17 @@ then
 	if ! [ -f "$pp/bookmarks.html" ]
 	then echo "<html><head><title>$p bookmarks</title></head><body><h1><a href=\".\">$p</a> bookmarks</h2><ul>" > "$pp/bookmarks.html"
 	fi
+	if cat "$pp/bookmarks.html" | grep "$3"
+	then
+		echo "$3 seems to match the above. Add it anyway? (y/n)"
+		read -n1 q
+		if ! [[ $q =~ [Yy] ]]
+		then exit 1
+		fi
+	fi
 	echo Title for $3 for project $p
 	read t
-	echo "<li><a href=\"$3\">${t:-"$3"}</e></li>" >> "$pp/bookmarks.html"
+	echo "<li><a href=\"$3\">${t:-"$3"}</a></li>" >> "$pp/bookmarks.html"
 elif [[ "$1" == "bookmarks" ]]
 then
 	gp "$2"
