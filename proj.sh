@@ -43,7 +43,7 @@ then
 		shift
 		git $*
 	else
-		echo "Not a git repository. Please run $0 git init, first."
+		echo "Not a git repository. Please run $c git init, first."
 	fi
 elif [[ "$1" == "version" ]]
 then
