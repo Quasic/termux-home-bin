@@ -46,7 +46,7 @@ a termux-open 'view in app' 'termux-open --chooser'
 a termux-open 'send to app' 'termux-open --send --chooser'
 dialog --title "Select Action" --menu "What to do with $T $1" 0 0 0 "${M[@]}" echo test 2>$TMPFILE
 if [ $? = 0 ]
-then eval "$(< $TMPFILE) $1"
+then eval "$(< $TMPFILE) '$1'"
 elif [ -s $TMPFILE ]
 then
 	echo Dialog error:
