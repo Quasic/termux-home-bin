@@ -1,6 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/sh
-apt update
-apt install dialog
+pkg install dialog
 mkdir -p ~/bin
 if [ -e ~/bin/termux-url-opener ]
 then mv ~/bin/termux-url-opener ~/bin/termux-url-opener~ && echo backed up ~/bin/termux-url-opener to ~/bin/termux-url-opener~
