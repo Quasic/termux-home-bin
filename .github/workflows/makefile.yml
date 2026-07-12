@@ -29,10 +29,19 @@ jobs:
         echo 'Running install as root to loosely simulate termux environment...'
         echo 'first without previous version'
         sudo make -j"$(nproc)" all
+
+    - name: ready for make all 2
+      run:
         echo 'now with previous version'
         echo 'test' > ~/bin/termux-url-opener
+
+    - name: make all 2
+      run:
         test "$(cat ~/bin/termux-url-opener)" = test
         sudo make -j"$(nproc)" all
+
+    - name: test/diagnose make all 2
+      run:
         ls -l ~/bin
         cat ~/bin/termux-url-opener~
         test "$(cat ~/bin/termux-url-opener~)" = test
