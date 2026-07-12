@@ -33,9 +33,11 @@ jobs:
         sudo make -j"$(nproc)" all
 
     - name: check if proj installed
+      run:
         command -v proj
 
     - name: check if duckduckgo installed
+      run:
         command -v duckduckgo
 
     - name: setup for backup test
