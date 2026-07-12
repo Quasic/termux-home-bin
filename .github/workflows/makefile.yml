@@ -23,20 +23,29 @@ jobs:
     - name: Run shellcheck on shell scripts
       run: shellcheck *.sh
 
+    - name: Check proj.sh
+      run: bash proj.sh --version
+
     - name: dummy pkg
       run: sudo ln /usr/bin/true /usr/bin/pkg
 
     - name: make all
       run: sudo PREFIX=/usr make all
 
-    - name: check duckduckgo
+    - name: check duckduckgo installation
       run: test -x /usr/bin/duckduckgo && cmp /usr/bin/duckduckgo duckduckgo.sh
 
-    - name: check proj
-      run: test -x /usr/bin/proj && cmp /usr/bin/proj proj.sh && /usr/bin/proj --help
+    - name: check proj installation
+      run: test -x /usr/bin/proj && cmp /usr/bin/proj proj.sh
+
+    - name: check ~/bin/termux-url-opener installation
+      run: cmp ~/bin/termux-url-opener termux-url-opener
+
+    - name: check ~/bin/termux-file-editor installation
+      run: test ~/bin/termux-file-editor -ef ~/bin/termux-url-opener
 
     - name: setup for backup test
-      run: sudo HOME="$HOME" bash -c 'mkdir -p "$HOME/bin"&&echo test > "$HOME/bin/termux-url-opener"&&cp "$HOME/bin/termux-url-opener" "$HOME/bin/termux-url-opener~"&&chmod +x "$HOME/bin/termux-file-editor"&&ln -sfb "$HOME/bin/termux-url-opener" "$HOME/bin/termux-file-editor"' && ls -l ~/bin
+      run: sudo HOME="$HOME" bash -c 'echo test > "$HOME/bin/termux-url-opener"&&cp "$HOME/bin/termux-url-opener" "$HOME/bin/termux-url-opener~"&&chmod +x "$HOME/bin/termux-file-editor"&&ln -sfb "$HOME/bin/termux-url-opener" "$HOME/bin/termux-file-editor"' && ls -l ~/bin
         
     - name: run install script directly to check backup functions
       run: sudo HOME="$HOME" sh ./install.sh
