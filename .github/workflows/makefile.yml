@@ -30,6 +30,9 @@ jobs:
         echo 'first without previous version'
         sudo make -j"$(nproc)" all
         echo 'now with previous version'
-        echo 'test' >~/bin/termux-url-opener
+        echo 'test' > ~/bin/termux-url-opener
         sudo make -j"$(nproc)" all
-        test "$(cat ~/bin/termux-url-opener~)" = test
+        test "$(cat ~/bin/termux-url-opener~)" = test || {
+        ls -l ~/bin
+        cat ~/bin/termux-url-opener~
+        }
