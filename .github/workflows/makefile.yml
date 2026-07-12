@@ -27,10 +27,7 @@ jobs:
       run: sudo ln /usr/bin/true /usr/bin/pkg
 
     - name: make all
-      run:
-        set -euo pipefail
-        echo "Running install as root to loosely simulate termux environment..."
-        sudo PREFIX=/usr make -j"$(nproc)" all
+      run: sudo PREFIX=/usr make all
 
     - name: check duckduckgo
       run: test -x /usr/bin/duckduckgo
