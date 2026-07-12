@@ -18,6 +18,7 @@ if [[ $0 =~ -file-editor$ ]]; then
 	a nano Nano
 	a ne 'The Nice Editor'
 	a mcedit 'Midnight Commander editor'
+        a micro 'Light emacs style editor'
 	a nvim Neovim
 	a vim 'Vi iMproved'
 	a vi 'Viewer/Editor'
