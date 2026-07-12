@@ -29,10 +29,11 @@ jobs:
         echo "Running install as root to loosely simulate termux environment..."
         sudo make -j"$(nproc)" all
 
-    - name: setup to make again
+    - name: setup for backup test
       run:
-        sudo HOME="$HOME" bash -c 'echo test > ~/bin/termux-url-opener'
-        ls ~/bin
+        set -euo pipefail
+        sudo HOME="$HOME" bash -c 'mkdir -p "$HOME/bin"&&echo test > "$HOME/bin/termux-url-opener"&&cp "$HOME/bin/termux-url-opener" "$HOME/bin/termux-url-opener~"&&chmod +x "$HOME/bin/termux-file-editor"&&ln -sfb "$HOME/bin/termux-url-opener" "$HOME/bin/termux-file-editor"'
+        ls -l ~/bin
         
     - name: run install script directly
       run:
@@ -42,4 +43,5 @@ jobs:
       
     - name: check if ~/bin/termux-url-opener~ exists
       run:
+        ls -l ~/bin
         test -e "$HOME/bin/termux-url-opener~"
