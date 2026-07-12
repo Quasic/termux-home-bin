@@ -27,4 +27,5 @@ jobs:
       run:
         set -euo pipefail
         echo "Running install as root to loosely simulate termux environment..."
-        sudo make -j"$(nproc)" all
+        sudo HOME="$HOME" make -j"$(nproc)" all
+        ls -l "$HOME/bin"
