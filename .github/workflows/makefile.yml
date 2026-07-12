@@ -31,7 +31,8 @@ jobs:
         sudo make -j"$(nproc)" all
         echo 'now with previous version'
         echo 'test' > ~/bin/termux-url-opener
+        test "$(cat ~/bin/termux-url-opener)" = test
         sudo make -j"$(nproc)" all
         ls -l ~/bin
         cat ~/bin/termux-url-opener~
-        test "$(cat ~/bin/termux-url-opener~)" = test && echo passed
+        test "$(cat ~/bin/termux-url-opener~)" = test
