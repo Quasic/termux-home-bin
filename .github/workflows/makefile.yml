@@ -30,24 +30,16 @@ jobs:
       run: sudo PREFIX=/usr make all
 
     - name: check duckduckgo
-      run: test -x /usr/bin/duckduckgo
+      run: test -x /usr/bin/duckduckgo && cmp /usr/bin/duckduckgo duckduckgo.sh
 
     - name: check proj
-      run: /usr/bin/proj --help
+      run: test -x /usr/bin/proj && cmp /usr/bin/proj proj.sh && /usr/bin/proj --help
 
     - name: setup for backup test
-      run:
-        set -euo pipefail
-        sudo HOME="$HOME" bash -c 'mkdir -p "$HOME/bin"&&echo test > "$HOME/bin/termux-url-opener"&&cp "$HOME/bin/termux-url-opener" "$HOME/bin/termux-url-opener~"&&chmod +x "$HOME/bin/termux-file-editor"&&ln -sfb "$HOME/bin/termux-url-opener" "$HOME/bin/termux-file-editor"'
-        ls -l ~/bin
+      run: sudo HOME="$HOME" bash -c 'mkdir -p "$HOME/bin"&&echo test > "$HOME/bin/termux-url-opener"&&cp "$HOME/bin/termux-url-opener" "$HOME/bin/termux-url-opener~"&&chmod +x "$HOME/bin/termux-file-editor"&&ln -sfb "$HOME/bin/termux-url-opener" "$HOME/bin/termux-file-editor"' && ls -l ~/bin
         
-    - name: run install script directly
-      run:
-        set -euo pipefail
-        echo 'Running again to check backup function'
-        sudo HOME="$HOME" sh ./install.sh
-        ls -l "$HOME/bin/*"
+    - name: run install script directly to check backup functions
+      run: sudo HOME="$HOME" sh ./install.sh
       
     - name: check if ~/bin/termux-url-opener~ exists
-      run:
-        test -e "$HOME/bin/termux-url-opener~"
+      run: test -e "$HOME/bin/termux-url-opener~"
