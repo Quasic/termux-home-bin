@@ -25,14 +25,14 @@ jobs:
 
     - name: make all
       run:
-        sudo bash -c 'set -euo pipefail
+        set -euo pipefail
         echo "Running install as root to loosely simulate termux environment..."
         echo "first without previous version"
-        sudo make -j"$(nproc)" all
-        ls -l "$HOME/bin"
+        sudo HOME="$HOME" make -j"$(nproc)" all
+        ls -l "/bin"
         echo "now with previous version"
         echo test > ~/bin/termux-url-opener
-        make -j"$(nproc)" all
+        sudo HOME="$HOME" make -j"$(nproc)" all
         ls -l "$HOME/bin"
         cat "$HOME/bin/termux-url-opener~"
-        test "$(cat "$HOME/bin/termux-url-opener~")" = test'
+        test "$(cat "$HOME/bin/termux-url-opener~")" = test
