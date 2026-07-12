@@ -14,5 +14,14 @@ jobs:
     steps:
     - uses: actions/checkout@main
 
+    - name: Check Makefile syntax
+      run: make -n all
+
+    - name: Install shellcheck
+      run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+    - name: Run shellcheck on shell scripts
+      run: shellcheck *.sh
+
     - name: make all
-      run: make all
+      run: sudo make all
