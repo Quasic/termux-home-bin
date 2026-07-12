@@ -24,4 +24,12 @@ jobs:
       run: shellcheck *.sh
 
     - name: make all
-      run: sudo make all
+      run:
+        set -euo pipefail
+        echo 'Running install as root to loosely simulate termux environment...'
+        echo 'first without previous version'
+        sudo make -j"$(nproc)" all
+        echo 'now with previous version'
+        echo 'test' >~/bin/termux-url-opener
+        sudo make -j"$(nproc)" all
+        test "$(cat ~/bin/termux-url-opener~)" = test
