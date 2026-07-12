@@ -17,8 +17,11 @@ jobs:
     - name: Check Makefile syntax
       run: make -n all
 
+    - name: Set up pkg alias
+      run: alias pkg='sudo apt-get update&&sudo apt-get'
+
     - name: Install shellcheck
-      run: sudo apt-get update && sudo apt-get install -y shellcheck
+      run: pkg install -y shellcheck
 
     - name: Run shellcheck on shell scripts
       run: shellcheck *.sh
@@ -40,7 +43,7 @@ jobs:
         set -euo pipefail
         echo 'Running again to check backup function'
         sudo HOME="$HOME" sh ./install.sh
-        ls -l "$HOME/bin"
+        ls -l "$HOME/bin/*"
       
     - name: check if ~/bin/termux-url-opener~ exists
       run:
