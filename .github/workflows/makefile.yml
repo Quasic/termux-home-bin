@@ -43,5 +43,4 @@ jobs:
       
     - name: check if ~/bin/termux-url-opener~ exists
       run:
-        ls -l ~/bin
         test -e "$HOME/bin/termux-url-opener~"
