@@ -39,7 +39,7 @@ jobs:
       run: sudo test ~/bin/termux-file-editor -ef ~/bin/termux-url-opener
 
     - name: setup for backup test
-      run: echo testUO | sudo tee "$HOME/bin/termux-url-opener" && echo testFE | sudo tee "$HOME/bin/termux-file-editor" && ls -l "$HOME/bin"
+      run: sudo HOME="$HOME" bash -c 'echo testUO > "$HOME/bin/termux-url-opener"' && sudo HOME="$HOME" bash -c 'echo testFE > "$HOME/bin/termux-file-editor"' && ls -l "$HOME/bin"
         
     - name: make all
       run: PREFIX=/usr sudo HOME="$HOME" make all
