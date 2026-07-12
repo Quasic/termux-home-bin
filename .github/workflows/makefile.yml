@@ -30,15 +30,13 @@ jobs:
       run:
         set -euo pipefail
         echo "Running install as root to loosely simulate termux environment..."
-        sudo make -j"$(nproc)" all
+        sudo PREFIX=/usr make -j"$(nproc)" all
 
-    - name: check if proj installed
-      run:
-        command -v proj
+    - name: check proj
+      run: proj --help
 
-    - name: check if duckduckgo installed
-      run:
-        command -v duckduckgo
+    - name: check duckduckgo
+      run: test -x /usr/bin/duckduckgo
 
     - name: setup for backup test
       run:
