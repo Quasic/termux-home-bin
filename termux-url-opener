@@ -2,7 +2,7 @@
 cd ~/downloads
 TMPFILE=dialog.tmp
 function a {
-if which "$1"
+if command -v "$1"
 then
 	M[${#M[*]}]="${3:-$1}"
 	M[${#M[*]}]="${2:-$1}"
@@ -12,10 +12,13 @@ a w3m 'w3m pager/browser'
 if [[ $0 =~ -file-editor$ ]]; then
 	T=file
 	TN=name
+	a pager "default pager [$(realpath "$(command -v pager)")]"
+	a editor "default editor [$(realpath "$(command -v editor)")]"
 	a sensible-editor
 	a nano Nano
 	a ne 'The Nice Editor'
 	a mcedit 'Midnight Commander editor'
+	a nvim Neovim
 	a vim 'Vi iMproved'
 	a vi 'Viewer/Editor'
 	a sensible-pager
@@ -27,6 +30,7 @@ if [[ $0 =~ -file-editor$ ]]; then
 	a termux-share 'view in app'
 elif [[ $0 =~ -url-opener$ ]]; then
 	T=url
+	a www-browser "default browser [$(realpath "$(command -v www-browser)")]"
 	a sensible-browser
 	a elinks
 	a lynx
@@ -35,7 +39,7 @@ elif [[ $0 =~ -url-opener$ ]]; then
 	then
 		a wget 'download with wget'
 	fi
-	#a curl 'download with curl' 'curl ?'
+	a curl 'download with curl' 'curl -O'
 	a termux-open-url 'view in app'
 else
 	T=unknown
