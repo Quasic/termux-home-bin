@@ -39,10 +39,10 @@ jobs:
       run: test -x /usr/bin/proj && cmp /usr/bin/proj proj.sh
 
     - name: check ~/bin/termux-url-opener installation
-      run: cmp ~/bin/termux-url-opener termux-url-opener
+      run: sudo cmp ~/bin/termux-url-opener termux-url-opener
 
     - name: check ~/bin/termux-file-editor installation
-      run: test ~/bin/termux-file-editor -ef ~/bin/termux-url-opener
+      run: sudo test ~/bin/termux-file-editor -ef ~/bin/termux-url-opener
 
     - name: setup for backup test
       run: sudo HOME="$HOME" bash -c 'echo test > "$HOME/bin/termux-url-opener"&&cp "$HOME/bin/termux-url-opener" "$HOME/bin/termux-url-opener~"&&chmod +x "$HOME/bin/termux-file-editor"&&ln -sfb "$HOME/bin/termux-url-opener" "$HOME/bin/termux-file-editor"' && ls -l ~/bin
