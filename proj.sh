@@ -8,6 +8,7 @@ function gp {
 	if [[ $# -lt 1 || "$1" == "" ]]
 	then
 		echo "Please enter project name:"
+		#shellcheck disable=SC2162
 		read p
 	else p="$1"
 	fi
@@ -15,7 +16,7 @@ function gp {
 	if ! [ -d "$pp" ]
 	then
 		echo "Project $p doesn't exist. Create it? (y/n)"
-		read -n1 q
+		read -rn1 q
 		if [[ "$q" =~ [Yy] ]]
 		then
 			mkdir -p "$pp" || exit 2
@@ -37,14 +38,17 @@ then
 	echo "$c version"
 elif [[ "$1" == "git" ]]
 then
-	cd "$h"
+  if cd "$h"
+  then
 	if [ -d .git ]
 	then
 		shift
-		git $*
+		git "$@"
 	else
 		echo "Not a git repository. Please run $c git init, first."
 	fi
+  else echo "Could not cd to $h"
+  fi
 elif [[ "$1" == "version" ]]
 then
 	echo "proj (as $c) version $v working in $h"
@@ -92,16 +96,16 @@ then
 	if ! [ -f "$pp/bookmarks.html" ]
 	then echo "<html><head><title>$p bookmarks</title></head><body><h1><a href=\".\">$p</a> bookmarks</h2><ul>" > "$pp/bookmarks.html"
 	fi
-	if cat "$pp/bookmarks.html" | grep "$3"
+	if grep "$3" "$pp/bookmarks.html"
 	then
 		echo "$3 seems to match the above. Add it anyway? (y/n)"
-		read -n1 q
+		read -rn1 q
 		if ! [[ $q =~ [Yy] ]]
 		then exit 1
 		fi
 	fi
-	echo Title for $3 for project $p
-	read t
+	echo "Title for $3 for project $p"
+	read -r t
 	echo "<li><a href=\"$3\">${t:-"$3"}</a></li>" >> "$pp/bookmarks.html"
 elif [[ "$1" == "bookmarks" ]]
 then

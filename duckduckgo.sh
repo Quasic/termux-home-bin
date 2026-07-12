@@ -2,8 +2,8 @@
 if [ $# -eq 0 ]
 then
 	echo Enter duckduckgo search:
-	read S
+	read -r S
 else
 	S=
 fi
-/data/data/com.termux/files/home/bin/termux-url-opener https://duckduckgo.com/?q=$(echo "${S:-$*}"|sed 's/ /+/g')
+/data/data/com.termux/files/home/bin/termux-url-opener "https://duckduckgo.com/?q=$(echo "${S:-$*}"|sed 's/ /+/g')"
