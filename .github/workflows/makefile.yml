@@ -32,11 +32,11 @@ jobs:
         echo "Running install as root to loosely simulate termux environment..."
         sudo PREFIX=/usr make -j"$(nproc)" all
 
-    - name: check proj
-      run: proj --help
-
     - name: check duckduckgo
       run: test -x /usr/bin/duckduckgo
+
+    - name: check proj
+      run: /usr/bin/proj --help
 
     - name: setup for backup test
       run:
