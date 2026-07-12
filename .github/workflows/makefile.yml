@@ -30,10 +30,7 @@ jobs:
       run: sudo ln /usr/bin/true /usr/bin/pkg
 
     - name: run install script directly
-      run: sudo sh ./install.sh
-      
-    - name: check ~/bin/termux-url-opener installation
-      run: sudo cmp ~/bin/termux-url-opener termux-url-opener
+      run: sudo sh ./install.sh && sudo cmp ~/bin/termux-url-opener termux-url-opener
 
     - name: check ~/bin/termux-file-editor installation
       run: sudo test ~/bin/termux-file-editor -ef ~/bin/termux-url-opener
