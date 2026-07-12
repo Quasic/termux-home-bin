@@ -57,7 +57,7 @@ jobs:
       run: test ~/bin/termux-file-editor -ef ~/bin/termux-url-opener
 
     - name: check ~/bin/termux-url-opener~ backup
-      run: cmp "$HOME/bin/termux-url-opener~" <(echo test)
+      run: cmp "$HOME/bin/termux-url-opener~" <(echo testUO)
 
     - name: check ~/bin/termux-file-editor~ backup
-      run: cmp ~/bin/termux-file-editor~ ~/bin/termux-url-opener~
+      run: cmp ~/bin/termux-file-editor~ <(echo testFE)
