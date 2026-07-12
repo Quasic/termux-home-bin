@@ -39,7 +39,7 @@ jobs:
       run: sudo test ~/bin/termux-file-editor -ef ~/bin/termux-url-opener
 
     - name: setup for backup test
-      run: sudo HOME="$HOME" bash -c 'echo testUO > "$HOME/bin/termux-url-opener"' && sudo HOME="$HOME" bash -c 'echo testFE > "$HOME/bin/termux-file-editor"' && ls -l "$HOME/bin"
+      run: sudo HOME="$HOME" bash -c 'echo testUO > "$HOME/bin/termux-url-opener" && rm "$HOME/bin/termux-file-editor" && echo testFE > "$HOME/bin/termux-file-editor"' && ls -l "$HOME/bin"
         
     - name: make all
       run: PREFIX=/usr sudo HOME="$HOME" make all
@@ -51,13 +51,13 @@ jobs:
       run: test -x /usr/bin/proj && cmp /usr/bin/proj proj.sh
 
     - name: check ~/bin/termux-url-opener installation
-      run: sudo cmp ~/bin/termux-url-opener termux-url-opener
+      run: cmp ~/bin/termux-url-opener termux-url-opener
 
     - name: check ~/bin/termux-file-editor installation
-      run: sudo test ~/bin/termux-file-editor -ef ~/bin/termux-url-opener
+      run: test ~/bin/termux-file-editor -ef ~/bin/termux-url-opener
 
     - name: check ~/bin/termux-url-opener~ backup
-      run: suco cmp "$HOME/bin/termux-url-opener~" <(echo test)
+      run: cmp "$HOME/bin/termux-url-opener~" <(echo test)
 
     - name: check ~/bin/termux-file-editor~ backup
-      run: sudo cmp ~/bin/termux-file-editor~ ~/bin/termux-url-opener~
+      run: cmp ~/bin/termux-file-editor~ ~/bin/termux-url-opener~
