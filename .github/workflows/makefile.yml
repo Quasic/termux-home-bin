@@ -40,10 +40,7 @@ jobs:
         set -euo pipefail
         echo 'Running again to check backup function'
         sudo HOME="$HOME" sh ./install.sh
-    
-    - name: ls -l ~/bin
-      run:
-        ls -l ~/bin
+        ls -l "$HOME/bin"
       
     - name: check if ~/bin/termux-url-opener~ exists
       run:
