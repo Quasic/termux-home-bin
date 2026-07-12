@@ -30,7 +30,7 @@ jobs:
       run: sudo ln /usr/bin/true /usr/bin/pkg
 
     - name: run install script directly
-      run: sudo HOME="$HOME" sh ./install.sh
+      run: sudo HOME="$HOME" sh ./install.sh && ls -l ~/bin
       
     - name: check ~/bin/termux-url-opener installation
       run: sudo cmp ~/bin/termux-url-opener termux-url-opener
@@ -39,7 +39,7 @@ jobs:
       run: sudo test ~/bin/termux-file-editor -ef ~/bin/termux-url-opener
 
     - name: setup for backup test
-      run: sudo bash -c 'echo test > "$HOME/bin/termux-url-opener"&&cp "$HOME/bin/termux-url-opener" "$HOME/bin/termux-url-opener~"&&chmod +x "$HOME/bin/termux-file-editor"&&ln -sfb "$HOME/bin/termux-url-opener" "$HOME/bin/termux-file-editor"' && ls -l ~/bin
+      run: sudo echo test > "$HOME/bin/termux-url-opener"&&sudo cp "$HOME/bin/termux-url-opener" "$HOME/bin/termux-url-opener~"&&sudo chmod +x "$HOME/bin/termux-file-editor"&&sudo ln -sfb "$HOME/bin/termux-url-opener" "$HOME/bin/termux-file-editor" && ls -l ~/bin
         
     - name: make all
       run: PREFIX=/usr sudo HOME="$HOME" make all
