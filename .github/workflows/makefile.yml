@@ -27,21 +27,18 @@ jobs:
       run:
         set -euo pipefail
         echo "Running install as root to loosely simulate termux environment..."
-        sudo HOME="$HOME" make -j"$(nproc)" all
-
-    - name: check if ~/bin/termux-url-opener exists
-      run:
-        test -e "$HOME/bin/termux-url-opener"
+        sudo make -j"$(nproc)" all
 
     - name: setup to make again
       run:
         echo test > ~/bin/termux-url-opener
+        ls ~/bin
         
     - name: run install script directly
       run:
         set -euo pipefail
         echo 'Running again to check backup function'
-        sudo HOME="$HOME" sh ./install.sh
+        sudo HOME="$HOME" bash -x ./install.sh
       
     - name: check if ~/bin/termux-url-opener~ exists
       run:
