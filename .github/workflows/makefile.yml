@@ -25,26 +25,14 @@ jobs:
 
     - name: make all
       run:
-        set -euo pipefail
-        echo 'Running install as root to loosely simulate termux environment...'
-        echo 'first without previous version'
+        sudo bash -c 'set -euo pipefail
+        echo "Running install as root to loosely simulate termux environment..."
+        echo "first without previous version"
         sudo make -j"$(nproc)" all
-
-    - name: ready for make all 2
-      run:
         ls -l "$HOME/bin"
-        echo 'now with previous version'
-        echo 'test' > "$HOME/bin/termux-url-opener"
-        cat "$HOME/bin/termux-url-opener"
-        ls -l ~/bin
-
-    - name: make all 2
-      run:
-        test "$(cat "$HOME/bin/termux-url-opener")" = test
-        sudo make -j"$(nproc)" all
-
-    - name: test/diagnose make all 2
-      run:
+        echo "now with previous version"
+        echo test > ~/bin/termux-url-opener
+        make -j"$(nproc)" all
         ls -l "$HOME/bin"
         cat "$HOME/bin/termux-url-opener~"
-        test "$(cat "$HOME/bin/termux-url-opener~")" = test
+        test "$(cat "$HOME/bin/termux-url-opener~")" = test'
