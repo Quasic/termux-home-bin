@@ -18,13 +18,46 @@ jobs:
       run: make -n all
 
     - name: Install shellcheck
-      run: sudo apt-get update && sudo apt-get install -y shellcheck
+      run: sudo apt-get update&&sudo apt-get install -y shellcheck
 
     - name: Run shellcheck on shell scripts
       run: shellcheck *.sh
 
+    - name: Check proj.sh
+      run: bash proj.sh --version
+
+    - name: dummy pkg
+      run: sudo ln /usr/bin/true /usr/bin/pkg
+
+    - name: run install script directly
+      run: sudo HOME="$HOME" sh ./install.sh && ls -l ~/bin
+      
+    - name: check ~/bin/termux-url-opener installation
+      run: sudo cmp ~/bin/termux-url-opener termux-url-opener
+
+    - name: check ~/bin/termux-file-editor installation
+      run: sudo test ~/bin/termux-file-editor -ef ~/bin/termux-url-opener
+
+    - name: setup for backup test
+      run: sudo HOME="$HOME" bash -c 'echo testUO > "$HOME/bin/termux-url-opener" && rm "$HOME/bin/termux-file-editor" && echo testFE > "$HOME/bin/termux-file-editor"' && ls -l "$HOME/bin"
+        
     - name: make all
-      run:
-        set -euo pipefail
-        echo "Running install as root to loosely simulate termux environment..."
-        sudo make -j"$(nproc)" all
+      run: PREFIX=/usr sudo HOME="$HOME" make all
+
+    - name: check duckduckgo installation
+      run: test -x /usr/bin/duckduckgo && cmp /usr/bin/duckduckgo duckduckgo.sh
+
+    - name: check proj installation
+      run: test -x /usr/bin/proj && cmp /usr/bin/proj proj.sh
+
+    - name: check ~/bin/termux-url-opener installation
+      run: cmp ~/bin/termux-url-opener termux-url-opener
+
+    - name: check ~/bin/termux-file-editor installation
+      run: test ~/bin/termux-file-editor -ef ~/bin/termux-url-opener
+
+    - name: check ~/bin/termux-url-opener~ backup
+      run: cmp "$HOME/bin/termux-url-opener~" <(echo testUO)
+
+    - name: check ~/bin/termux-file-editor~ backup
+      run: cmp ~/bin/termux-file-editor~ <(echo testFE)
