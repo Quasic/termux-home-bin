@@ -30,7 +30,10 @@ jobs:
       run: sudo ln /usr/bin/true /usr/bin/pkg
 
     - name: run install script directly
-      run: sudo sh ./install.sh && sudo cmp ~/bin/termux-url-opener termux-url-opener
+      run: sudo HOME="$HOME" sh ./install.sh
+      
+    - name: check ~/bin/termux-url-opener installation
+      run: sudo cmp ~/bin/termux-url-opener termux-url-opener
 
     - name: check ~/bin/termux-file-editor installation
       run: sudo test ~/bin/termux-file-editor -ef ~/bin/termux-url-opener
@@ -39,7 +42,7 @@ jobs:
       run: sudo bash -c 'echo test > "$HOME/bin/termux-url-opener"&&cp "$HOME/bin/termux-url-opener" "$HOME/bin/termux-url-opener~"&&chmod +x "$HOME/bin/termux-file-editor"&&ln -sfb "$HOME/bin/termux-url-opener" "$HOME/bin/termux-file-editor"' && ls -l ~/bin
         
     - name: make all
-      run: sudo PREFIX=/usr make all
+      run: PREFIX=/usr sudo HOME="$HOME" make all
 
     - name: check duckduckgo installation
       run: test -x /usr/bin/duckduckgo && cmp /usr/bin/duckduckgo duckduckgo.sh
