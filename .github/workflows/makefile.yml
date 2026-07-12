@@ -17,20 +17,26 @@ jobs:
     - name: Check Makefile syntax
       run: make -n all
 
-    - name: Set up pkg alias
-      run: sudo bash -c 'echo "alias pkg=\"sudo apt-get update&&sudo apt-get\"" >> ~/.bashrc'
-
     - name: Install shellcheck
-      run: pkg install -y shellcheck'
+      run: sudo apt-get update&&sudo apt-get install -y shellcheck'
 
     - name: Run shellcheck on shell scripts
       run: shellcheck *.sh
+
+    - name: dummy pkg
+      run: sudo ln /usr/bin/true /usr/bin/pkg
 
     - name: make all
       run:
         set -euo pipefail
         echo "Running install as root to loosely simulate termux environment..."
         sudo make -j"$(nproc)" all
+
+    - name: check if proj installed
+        command -v proj
+
+    - name: check if duckduckgo installed
+        command -v duckduckgo
 
     - name: setup for backup test
       run:
