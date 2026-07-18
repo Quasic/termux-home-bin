@@ -61,3 +61,13 @@ jobs:
 
     - name: check ~/bin/termux-file-editor~ backup
       run: cmp ~/bin/termux-file-editor~ <(echo testFE)
+
+    - name: setup passthrough termux-url-opener for duckduckgo.sh test
+      run: sudo bash -c 'mkdir -p /data/data/com.termux/files/home/bin&&printf "#!/bin/sh\nprintf %%s \"\$1\"" >/data/data/com.termux/files/home/bin/termux-url-opener&& chmod +x /data/data/com.termux/files/home/bin/termux-url-opener'
+
+    - name: check passthrough termux-url-opener
+      run: cat /data/data/com.termux/files/home/bin/termux-url-opener
+        
+    - name: test duckduckgo.sh
+      run: dash duckduckgo.sh 'test search & quack' | grep -q 'https://duckduckgo.com/?q=test+search+%26+quack'
+        
