@@ -1,6 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/bash
 v=0.7
-h="$HOME/proj"
+h="$HOME/prj"
 c="$(basename "$0")"
 mkdir -p "$h"
 
@@ -28,12 +28,12 @@ function gp {
 if [[ $# -eq 0 || "$1" =~ ^(-h|h|--help|help)$ ]]
 then
 	echo "Usage: $c help # for this screen"
-	echo "$c new <proj>"
-	echo "$c ls [proj]"
-	echo "$c mv <proj> <newproj>"
-	echo "$c file <proj> <path> [name] # mv file into project space"
-	echo "$c edit <proj> <name>"
-	echo "$c url <proj> <url>"
+	echo "$c new <project>"
+	echo "$c ls [project]"
+	echo "$c mv <project> <newproject>"
+	echo "$c file <project> <path> [name] # mv file into project space"
+	echo "$c edit <project> <name>"
+	echo "$c url <project> <url>"
 	echo "$c git ..."
 	echo "$c version"
 elif [[ "$1" == "git" ]]
@@ -51,7 +51,7 @@ then
   fi
 elif [[ "$1" == "version" ]]
 then
-	echo "proj (as $c) version $v working in $h"
+	echo "prj (as $c) version $v working in $h"
 elif [[ "$1" == "ls" ]]
 then
 	ls "$h/$2"

@@ -23,8 +23,8 @@ jobs:
     - name: Run shellcheck on shell scripts
       run: shellcheck *.sh
 
-    - name: Check proj.sh
-      run: bash proj.sh --version
+    - name: Check prj.sh
+      run: bash prj.sh --version
 
     - name: dummy pkg
       run: sudo ln /usr/bin/true /usr/bin/pkg
@@ -47,8 +47,8 @@ jobs:
     - name: check duckduckgo installation
       run: test -x /usr/bin/duckduckgo && cmp /usr/bin/duckduckgo duckduckgo.sh
 
-    - name: check proj installation
-      run: test -x /usr/bin/proj && cmp /usr/bin/proj proj.sh
+    - name: check prj installation
+      run: test -x /usr/bin/prj && cmp /usr/bin/prj prj.sh
 
     - name: check ~/bin/termux-url-opener installation
       run: cmp ~/bin/termux-url-opener termux-url-opener
