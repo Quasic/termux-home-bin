@@ -2,7 +2,7 @@ default:
 	# to install, run make handlers or make duckduckgo or make all
 
 check:
-    bash test.sh
+	bash test.sh
 
 handlers:
 	sh install.sh
