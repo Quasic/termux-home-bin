@@ -1,6 +1,9 @@
 default:
 	# to install, run make handlers or make duckduckgo or make all
 
+check:
+    bash test.sh
+
 handlers:
 	sh install.sh
 	
@@ -16,4 +19,4 @@ proj:
 	cp prj.sh "${PREFIX}/bin/proj"
 	chmod +x "${PREFIX}/bin/proj"
 
-all: handlers duckduckgo prj
+all: check handlers duckduckgo prj
