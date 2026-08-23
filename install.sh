@@ -11,7 +11,7 @@ cp termux-url-opener ~/bin
 cp dialog-wrapper.sh ~/bin
 if cd ~/bin
 then
-chmod +x termux-url-opener dialog-wrapper.sh && echo "termux-url-opener and dialog-wrapper.sh installed"
+chmod +x termux-url-opener dialog-wrapper.sh && echo "termux-url-opener and dialog-wrapper.sh installed at $(realpath termux-url-opener)"
 ln -sfb termux-url-opener termux-file-editor && echo termux-file-editor installed as symlink with -b option
 else echo Could not cd to ~/bin
 fi
