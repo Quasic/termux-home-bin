@@ -1,6 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # Dialog wrapper to abstract between termux-dialog and dialog
 # Usage: source this file, then call show_menu with your options
+# Copilot-assisted implementation
 
 # Detect which dialog tool is available
 # Priority: TERMUX_DIALOG env var > termux-dialog > dialog
@@ -46,9 +47,9 @@ show_menu() {
         return 1
     }
     
-    # Build arrays of options and labels
+    # Build arrays of options and labels from remaining arguments
     local -a options labels
-    while [[ $# -gt 0 ]]; do
+    while [[ $# -gt 1 ]]; do
         options+=("$1")
         labels+=("$2")
         shift 2
@@ -69,10 +70,13 @@ show_menu_termux_dialog() {
     
     local -a options labels
     local i=0
-    while [[ $i -lt $# ]]; do
+    # Process all arguments: first half are options, second half are labels
+    local count=$#
+    local mid=$((count / 2))
+    
+    for ((i=0; i<mid; i++)); do
         options+=("${!((i+1))}")
-        labels+=("${!((i+2))}")
-        ((i += 2))
+        labels+=("${!((i+mid+1))}")
     done
     
     # Build comma-separated values for termux-dialog
@@ -86,13 +90,13 @@ show_menu_termux_dialog() {
     if [[ $exit_code -eq 0 ]]; then
         # termux-dialog returns the label, we need to find the corresponding option
         local selected_label="$result"
-        local i=0
-        while [[ $i -lt ${#labels[@]} ]]; do
-            if [[ "${labels[$i]}" == "$selected_label" ]]; then
-                echo "${options[$i]}" > "$tmpfile"
+        local j=0
+        while [[ $j -lt ${#labels[@]} ]]; do
+            if [[ "${labels[$j]}" == "$selected_label" ]]; then
+                echo "${options[$j]}" > "$tmpfile"
                 return 0
             fi
-            ((i++))
+            ((j++))
         done
     fi
     
