@@ -1,4 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/bash
+source ~/bin/dialog-wrapper.sh
+
 cd ~/downloads
 TMPFILE=dialog.tmp
 function a {
@@ -49,7 +51,7 @@ a termux-clipboard-set "copy $T$TN to clipboard"
 a termux-share "share $T$TN as text" 'termux-share -a send <<<'
 a termux-open 'view in app' 'termux-open --chooser'
 a termux-open 'send to app' 'termux-open --send --chooser'
-dialog --title "Select Action" --menu "What to do with $T $1" 0 0 0 "${M[@]}" echo test 2>$TMPFILE
+show_menu "Select Action" "What to do with $T $1" "$TMPFILE" "${M[@]}"
 if [ $? = 0 ]
 then eval "$(< $TMPFILE) '$1'"
 elif [ -s $TMPFILE ]
@@ -58,4 +60,3 @@ then
 	cat $TMPFILE
 fi
 rm $TMPFILE
-
