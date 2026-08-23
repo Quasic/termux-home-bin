@@ -47,18 +47,10 @@ show_menu() {
         return 1
     }
     
-    # Build arrays of options and labels from remaining arguments
-    local -a options labels
-    while [[ $# -gt 1 ]]; do
-        options+=("$1")
-        labels+=("$2")
-        shift 2
-    done
-    
     if [[ "$dialog_tool" == "termux-dialog" ]]; then
-        show_menu_termux_dialog "$title" "$tmpfile" "${options[@]}" "${labels[@]}"
+        show_menu_termux_dialog "$title" "$tmpfile" "$@"
     else
-        show_menu_dialog "$title" "$description" "$tmpfile" "${options[@]}" "${labels[@]}"
+        show_menu_dialog "$title" "$description" "$tmpfile" "$@"
     fi
 }
 
@@ -68,15 +60,14 @@ show_menu_termux_dialog() {
     local tmpfile="$2"
     shift 2
     
-    local -a options labels
-    local i=0
-    # Process all arguments: first half are options, second half are labels
-    local count=$#
-    local mid=$((count / 2))
+    local -a options=()
+    local -a labels=()
     
-    for ((i=0; i<mid; i++)); do
-        options+=("${!((i+1))}")
-        labels+=("${!((i+mid+1))}")
+    # Process option/label pairs from arguments
+    while [[ $# -gt 1 ]]; do
+        options+=("$1")
+        labels+=("$2")
+        shift 2
     done
     
     # Build comma-separated values for termux-dialog
@@ -90,13 +81,12 @@ show_menu_termux_dialog() {
     if [[ $exit_code -eq 0 ]]; then
         # termux-dialog returns the label, we need to find the corresponding option
         local selected_label="$result"
-        local j=0
-        while [[ $j -lt ${#labels[@]} ]]; do
-            if [[ "${labels[$j]}" == "$selected_label" ]]; then
-                echo "${options[$j]}" > "$tmpfile"
+        local i
+        for ((i=0; i<${#labels[@]}; i++)); do
+            if [[ "${labels[$i]}" == "$selected_label" ]]; then
+                echo "${options[$i]}" > "$tmpfile"
                 return 0
             fi
-            ((j++))
         done
     fi
     
