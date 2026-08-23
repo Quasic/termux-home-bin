@@ -50,7 +50,6 @@ jobs:
     - name: check duckduckgo installation
       run: test -x /usr/bin/duckduckgo && cmp /usr/bin/duckduckgo duckduckgo.sh
 
-<<<<<<< HEAD
     - name: check prj installation
       run: test -x /usr/bin/prj && cmp /usr/bin/prj prj.sh
 
