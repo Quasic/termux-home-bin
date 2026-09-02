@@ -73,4 +73,6 @@ jobs:
         
     - name: test duckduckgo.sh
       run: dash duckduckgo.sh 'test%+search & quack' | grep -q 'https://duckduckgo.com/?q=test%25%2Bsearch+%26+quack'
-        
+       
+    - name: pick install termux-dialog headless
+      run: curl -o ~/bin/termux-dialog https://raw.githubusercontent.com/Quasic/termux-api-sim/refs/heads/sim/scripts/termux-dialog.sh&&chmod +x ~/bin/termux-dialog&&command -v termux-dialog
