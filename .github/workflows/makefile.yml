@@ -75,10 +75,10 @@ jobs:
       run: dash duckduckgo.sh 'test%+search & quack' | grep -q 'https://duckduckgo.com/?q=test%25%2Bsearch+%26+quack'
        
     - name: download termux-dialog headless
-      run: sudo HOME="$HOME" curl -o ~/bin/termux-dialog https://raw.githubusercontent.com/Quasic/termux-api-sim/refs/heads/sim/scripts/termux-dialog.sh
+      run: sudo HOME="$HOME" curl -o /usr/bin/termux-dialog https://raw.githubusercontent.com/Quasic/termux-api-sim/refs/heads/sim/scripts/termux-dialog.sh
 
     - name: make termux-dialog headless executable
-      run: sudo HOME="$HOME" chmod +x ~/bin/termux-dialog
+      run: sudo HOME="$HOME" chmod +x /usr/bin/termux-dialog
 
     - name: check termux-dialog is ready to execute
       run: command -v termux-dialog
