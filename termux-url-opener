@@ -1,6 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
 cd ~/downloads
-TMPFILE=dialog.tmp
 function a {
 if command -v "$1"
 then
@@ -49,13 +48,11 @@ a termux-clipboard-set "copy $T$TN to clipboard"
 a termux-share "share $T$TN as text" 'termux-share -a send <<<'
 a termux-open 'view in app' 'termux-open --chooser'
 a termux-open 'send to app' 'termux-open --send --chooser'
-dialog --title "Select Action" --menu "What to do with $T $1" 0 0 0 "${M[@]}" echo test 2>$TMPFILE
-if [ $? = 0 ]
-then eval "$(< $TMPFILE) '$1'"
-elif [ -s $TMPFILE ]
+if cmd=$(dialog --title "Select Action" --menu "What to do with $T $1" 0 0 0 "${M[@]}" echo test)
 then
-	echo Dialog error:
-	cat $TMPFILE
+	printf '%s %q' "$cmd" "$1"
+	eval "$cmd"
+else
+	printf 'Dialog error %i\n' $?
 fi
-rm $TMPFILE
 
