@@ -55,7 +55,7 @@ Notes:
 - Uninstall: remove the installed scripts from `~/bin` and restore your backups. You can also manually remove duckduckgo and prj from .../usr/bin.
 
 ## Tested & compatibility
-- Testing note: I currently only test this on Android 11. I tested Android 5 and 7 in the past. (see issue #1). If you test on another Android/Termux version, please report results in the issues.
+- Testing note: I currently only test this on Android 11. I tested Android 5 and 7 in the past. (see issue #1). I now have switched to a more dynamic script I use on all devices, in the main branch. This one may continue to be updated, but in a more limited capacity. If you test on another Android/Termux version, please report results in the issues.
   - Issue: https://github.com/Quasic/termux-home-bin/issues/1
 
 ## Development & Contributing
@@ -66,4 +66,4 @@ Notes:
 GPL-3
 
 ## Contact / Author
-offer- Repository: https://github.com/Quasic/termux-home-bin
+- Repository: https://github.com/Quasic/termux-home-bin
