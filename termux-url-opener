@@ -251,7 +251,7 @@ test toast=termux-toast
 test echo=echo
 ')}"
 )
-if [ "$2" = config ]
+if [ "${2:-}" = config ]
 then
 	printf '# Success!\n'
 	exit 0
@@ -260,7 +260,7 @@ p="What to do with $ff $1"
 printf 'Please choose action:\n%s\n' "$p"
 if menu "$p"
 then
-	printf -v cmd "$choice %q" "$1"
+	printf -v cmd '%s %q' "$choice" "$1"
 	printf %s\\n "$cmd"
 	eval "$cmd"
 else
