@@ -1,21 +1,22 @@
 # termux-home-bin
 
 Small collection of Termux handler scripts and lightweight utilities:
-- Menu wrappers for `termux-url-opener` and `termux-file-editor` using `dialog` or `termux-dialog`.
+- Menu wrappers for `termux-url-opener` and `termux-file-editor` using `dialog`, `termux-dialog` widget, or bash `select`.
 - A tiny directory-based project organizer (prj).
 - A command-line DuckDuckGo search helper.
 
 ## Features
 - Interactive menu for handling shared URLs and files in Termux.
-- **Dual dialog support**: Automatically uses `termux-dialog` (if available) or falls back to `dialog`.
+- **Dual dialog support**: Automatically uses `termux-dialog` (if available) or falls back to `dialog` or `select`.
+- Customizeable via config file or environment variable.
 - Lightweight "prj" directory-based organizer (inspired by `pass`) for storing project notes/bookmarks.
 - `duckduckgo` command for quick searches from the shell.
-- Installer that will attempt to install `dialog` if it is missing and backs up existing handlers.
+- Installer that backs up existing handlers.
 
 ## Requirements
 - Termux (Android)
-- `dialog` and/or `termux-dialog` (at least one required; the installer will attempt to install `dialog` if missing)
 - A POSIX shell (sh / bash) — scripts are standard shell scripts.
+- `dialog` and/or `termux-dialog` are recommended, but bash `select` is a fallback
 
 ## Quick install
 Clone the repo and run the installer:
@@ -32,8 +33,10 @@ Clone the repo and run the installer:
 
 Notes:
 - The installer will back up any existing handlers in `~/bin`. I recommend moving or renaming those backups if you want to archive them permanently — the installer's backups are only a simple fallback.
-- If `dialog` is not installed or outdated, the installer will attempt to install/update it (or you can install manually with `pkg install dialog`).
-- For `termux-dialog` support, install it with `pkg install termux-dialog`. The script will auto-detect and prefer it if available.
+
+- For `termux-dialog` support, install it with `pkg install termux-api`after installing the Termux:API app. The script will auto-detect and prefer it by default if available.
+
+- You can also run `pkg install dialog` to upgrade it to the newest version, though it does come with modern Termux.
 
 ## Usage examples
 
@@ -65,22 +68,68 @@ Notes:
 By default, the menu system will:
 1. Check if `termux-dialog` is installed and use it if available
 2. Fall back to `dialog` if `termux-dialog` is not found
+3. Fall back to bash select if dialog is not found.
 
-You can override this behavior by setting the `TERMUX_DIALOG` environment variable:
+You can override this behavior by setting the `TERMUX_URL_OPENER_CONFIG` environment variable or creating `.termux-url-opener.conf` in the same directory (usually `~/bin`):
 
-```bash
-# Force termux-dialog
-export TERMUX_DIALOG=termux-dialog
-# or
-export TERMUX_DIALOG=1
+```
+# Create config file
+~ $ bin/termux-url-opener dump config > bin/.termux-url-opener.conf
 
-# Force dialog
-export TERMUX_DIALOG=dialog
-# or
-export TERMUX_DIALOG=2
+# Change termux-dialog widget
+nano bin/.termux-url-opener.conf
+# in the [display] section, at the top of the file, edit the line
+termux-dialog-widget=...
+# a blank or unknown widget will disable it
 
-# Auto-detect (default)
-unset TERMUX_DIALOG
+# Disable dialog: in the config file, remove
+dialog
+# or replace with one of these:
+#dialog
+dialog=
+# I do this on my Android 7 device, where modern dialog acts strange
+
+# To use dialog, but have termux-dialog as a backup for some reason,
+# just swap the order of those lines in the file, so dialog comes first
+
+# I recommend leaving bash in the list,
+# because it should be the most reliable.
+bash
+
+# Other sections
+[url]
+# This section gives options to show in the menu for urls
+# They can be just a command
+termux-clipboard-set
+# or have a menu label
+Copy to clipboard=termux-clipboard-set
+# Menu labels can't include equals, but commands can
+test if its blah=test blah =
+# Blank lines and commands are ignored
+This option won't show=
+[file]
+# Same for file menu options
+[both]
+# options listed here will show in both menus
+
+# Comments always have their own line
+key=value # This is part of the value, not a comment
+# That comment will most likely hide the url or file from the command
+# but it's allowed for things like this:
+Add as comment to config file={ printf '\n# ';cat } >>configfile <<<
+
+# After editing, it's always a good idea to test the config file in each handler
+~ $ bin/termux-url-opener test config
+~ $ bin/termux-file-editor test config
+# This will explain how it processes the file up to the point of
+# showing the menu. It will NOT test the menu or whether commands
+# work as expected once selected. For that, try sharing a file to
+# Termux or running the script:
+termux-url-opener http://example.com
+# Then select the option to test it
+
+# After updating/reinstallation you may want to diff with the new default config:
+~ $ diff bin/.termux-url-opener.conf <(bin/termux-url-opener dump config)
 ```
 
 ## Backups & Uninstall
@@ -88,7 +137,7 @@ unset TERMUX_DIALOG
 - Uninstall: remove the installed scripts from `~/bin` and restore your backups. You can also manually remove duckduckgo and prj from .../usr/bin.
 
 ## Tested & compatibility
-- Testing note: I currently only test this on Android 11. I tested Android 5 and 7 in the past. (see issue #1). If you test on another Android/Termux version, please report results in the issues.
+- Testing note: I now currently use this on Android 7 and 11. I tested Android 5 in the past. I had trouble on Android 7 (see issue #1) that caused me to refactor from a simple script to a state machine. If you test on another Android/Termux version, please report results in the issues.
   - Issue: https://github.com/Quasic/termux-home-bin/issues/1
 
 ## Development & Contributing

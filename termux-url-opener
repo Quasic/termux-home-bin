@@ -174,6 +174,7 @@ do
 				then printf '# BusyBox wget only does http or ftp.\n'
 				fi;;
 			pager|editor|www-browser) option "$value" "$key [default $c: $(realpath "$(command -v "$c")")]";;
+			'') [ -n "$testing" ]&&printf '# Blank value, ignoring.\n';;
 			*) option "$value" "$key"
 			esac;;
 		*) [ -n "$testing" ]&&printf '# ignoring section contents.\n'
