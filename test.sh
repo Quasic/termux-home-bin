@@ -12,11 +12,11 @@ then
 else printf 'SKIPPED TESTS: no make\n'
 fi
 # check shell scripts
-for s in ./*.sh
+for s in ./*.sh termux-url-opener
 do bash -n "$s"||fail "$s" 'bash -n'
 done
 if command -v shellcheck
-then shellcheck ./*.sh||fail '*.sh' shellcheck
+then shellcheck ./*.sh termux-url-opener||fail '*.sh termux-url-opener' shellcheck
 else printf 'SKIPPED TESTS: no shellcheck\n'
 fi
 # check prj.sh
