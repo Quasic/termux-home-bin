@@ -3,6 +3,8 @@
 
 set -u
 
+dialog(){
+
 showhelp() {
     cat >&2 <<EOF
 dialog.sh - common dialog, Termux, and Bash widget wrapper
@@ -90,54 +92,55 @@ Examples:
 
 This help text is provided by the help widget.
 EOF
-    exit 3
+    return 3
 }
 
-self_dir=$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd) || exit 3
+local self_dir
+self_dir=$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd) || return 3
 readonly CONF="${self_dir}/.dialog.conf"
 
-WIDGET=${1-}
+local WIDGET=${1-}
 case "$WIDGET" in
 --help|help|'') showhelp;;
 esac
 shift || true
 
-PROMPT=${1-}
+local PROMPT=${1-}
 shift || true
 
-TITLE=
-DEFAULT=
-HEIGHT=0
-WIDTH=0
-CONFIG_LINE=
+local TITLE=
+local DEFAULT=
+local HEIGHT=0
+local WIDTH=0
+local CONFIG_LINE=
 
 # Options are removed before widget arguments are processed.
-ARGS=()
+local ARGS=()
 while (($#)); do
     case "$1" in
         --help) showhelp;;
         --title)
-            (($# >= 2)) || { echo "--title requires an argument" >&2; exit 3; }
+            (($# >= 2)) || { echo "--title requires an argument" >&2; return 3; }
             TITLE=$2
             shift 2
             ;;
         --default)
-            (($# >= 2)) || { echo "--default requires an argument" >&2; exit 3; }
+            (($# >= 2)) || { echo "--default requires an argument" >&2; return 3; }
             DEFAULT=$2
             shift 2
             ;;
         --height)
-            (($# >= 2)) || { echo "--height requires an argument" >&2; exit 3; }
+            (($# >= 2)) || { echo "--height requires an argument" >&2; return 3; }
             HEIGHT=$2
             shift 2
             ;;
         --width)
-            (($# >= 2)) || { echo "--width requires an argument" >&2; exit 3; }
+            (($# >= 2)) || { echo "--width requires an argument" >&2; return 3; }
             WIDTH=$2
             shift 2
             ;;
         --config)
-            (($# >= 2)) || { echo "--config requires an argument" >&2; exit 3; }
+            (($# >= 2)) || { echo "--config requires an argument" >&2; return 3; }
             CONFIG_LINE=$2
             shift 2
             ;;
@@ -553,8 +556,8 @@ run_one() {
     esac
 }
 
-mapfile -t IMPLS < <(get_implementations "$WIDGET") || exit 3
-((${#IMPLS[@]})) || exit 3
+mapfile -t IMPLS < <(get_implementations "$WIDGET") || return 3
+((${#IMPLS[@]})) || return 3
 
 # Configuration lines may be whitespace-separated.
 read -r -a IMPLS <<<"${IMPLS[0]}"
@@ -575,10 +578,15 @@ do
     rc=$?
 
     case $rc in
-        0|1) exit "$rc" ;;
+        0|1) return "$rc" ;;
         2) continue ;;
-        *) exit 3 ;;
+        *) return 3 ;;
     esac
 done
 
-exit 2
+return 2
+
+}
+
+[ "${BASH_SOURCE[0]}" != "$0" ]||dialog "$@"
+
