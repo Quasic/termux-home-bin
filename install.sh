@@ -1,5 +1,4 @@
 #!/data/data/com.termux/files/usr/bin/sh
-pkg install dialog
 mkdir -p ~/bin
 if [ -e ~/bin/termux-url-opener ]
 then mv ~/bin/termux-url-opener ~/bin/termux-url-opener~ && echo backed up ~/bin/termux-url-opener to ~/bin/termux-url-opener~
@@ -15,3 +14,8 @@ chmod +x termux-url-opener dialog-wrapper.sh && echo "termux-url-opener and dial
 ln -sfb termux-url-opener termux-file-editor && echo termux-file-editor installed as symlink with -b option
 else echo Could not cd to ~/bin
 fi
+printf 'Suggested packages:
+dialog
+-or-
+termux-api (after installing the add-on app)
+'

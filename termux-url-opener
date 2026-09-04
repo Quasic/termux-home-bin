@@ -1,62 +1,269 @@
 #!/data/data/com.termux/files/usr/bin/bash
-source ~/bin/dialog-wrapper.sh
+set -u
 
-cd ~/downloads
-TMPFILE=dialog.tmp
-function a {
-if command -v "$1"
-then
-	M[${#M[*]}]="${3:-$1}"
-	M[${#M[*]}]="${2:-$1}"
-fi
+usage(){
+	cat >&2 <<EOF
+${BASH_SOURCE[0]}
+Handlers for URLs and files shared with Termux for Android
+
+This is usually launched by Termux, but can be run directly.
+
+Usage:
+termux-url-opener <url>
+   allows you to select and launch a browser or tool by default.
+termux-file-editor <file>
+   allows you to select and launch a viewer or editor by default.
+termux-url-opener dump config
+   sends the configuration file currently in use to stdout.
+termux-url-opener test config
+   tests the configuration file, showing no menu,
+   logging processing details to stdout, errors to stderr, and
+   returning exit code 0 on success, or higher numbers on failure.
+termux-url-opener cmdtest config
+   like the previous one, but only logs found commands
+termux-url-opener show help
+   shows this page.
+
+More information: https://github.com/Quasic/termux-home-bin
+EOF
+	exit
 }
-a w3m 'w3m pager/browser'
-if [[ $0 =~ -file-editor$ ]]; then
-	T=file
-	TN=name
-	a pager "default pager [$(realpath "$(command -v pager)")]"
-	a editor "default editor [$(realpath "$(command -v editor)")]"
-	a sensible-editor
-	a nano Nano
-	a ne 'The Nice Editor'
-	a mcedit 'Midnight Commander editor'
-        a micro 'Light emacs style editor'
-	a nvim Neovim
-	a vim 'Vi iMproved'
-	a vi 'Viewer/Editor'
-	a sensible-pager
-	a more 'more viewer'
-	a less 'less viewer'
-	a prj 'add to project' 'proj file ""'
-	a termux-share 'edit in app' 'termux-share -a edit'
-	a termux-share 'send to app' 'termux-share -a send'
-	a termux-share 'view in app'
-elif [[ $0 =~ -url-opener$ ]]; then
-	T=url
-	a www-browser "default browser [$(realpath "$(command -v www-browser)")]"
-	a sensible-browser
-	a elinks
-	a lynx
-	a prj bookmark 'proj url ""'
-	if [[ $1 =~ ^(ht|f)tp: ]] || ! [[ "$(wget 2>&1)" =~ ^BusyBox ]]
-	then
-		a wget 'download with wget'
-	fi
-	a curl 'download with curl' 'curl -O'
-	a termux-open-url 'view in app'
-else
-	T=unknown
-fi
-a termux-clipboard-set "copy $T$TN to clipboard"
-a termux-share "share $T$TN as text" 'termux-share -a send <<<'
-a termux-open 'view in app' 'termux-open --chooser'
-a termux-open 'send to app' 'termux-open --send --chooser'
-show_menu "Select Action" "What to do with $T $1" "$TMPFILE" "${M[@]}"
-if [ $? = 0 ]
-then eval "$(< $TMPFILE) '$1'"
-elif [ -s $TMPFILE ]
+if [ $# = 0 ]
+then usage
+elif [ $# -gt 1 ]
 then
-	echo Dialog error:
-	cat $TMPFILE
+	case "${2:-}" in
+	config) :;;
+	''|-h|--help|help) usage;;
+	*)
+		printf 'Unknown second parameter: %s\n' "$2"
+		usage
+	esac
 fi
-rm $TMPFILE
+{
+testing=''
+case "${2:-}" in
+config)
+	case "$1" in
+	dump)
+		cat
+		exit 0;;
+	'test') testing=1;;
+	cmdtest):;;
+	*)
+		printf 'Unknown first parameter: %s\n' "$1"
+		usage
+	esac
+	exec 11>&1;;
+*) exec 11>/dev/null
+esac
+cd ~/downloads||exit 1
+display=''
+mode=''
+format=unknown
+ff=''
+case "${BASH_SOURCE[0]}" in
+*-file-editor) format='file';ff=filename;;
+*-url-opener) format=url;ff=url;
+esac
+option(){
+	printf 'Configuration error: no display selected, %s ignored.\n' "$2=$1" >&2
+}
+while read -r line
+do
+	case "$line" in
+	''|\#*) :;;
+	\[*\])
+		mode="${line#\[}"
+		mode="${mode%\]}"
+		[ -n "$testing" ]&&printf '[%s]\n' "$mode"
+		[ "$format" = "$mode" ]&&mode=both
+		;;
+	*)
+		key="${line%%=*}"
+		value="${line#*=}"
+		[ -n "$testing" ]&&printf '%s=%s\n' "$key" "$value"
+		case "$mode" in
+		display)
+			if [ -n "$display" ]
+			then [ -n "$testing" ]&&printf '# Already chose %s display\n' "$display"
+			elif [ -z "$value" ]
+			then [ -n "$testing" ]&&printf '# Empty value, ignoring.\n'
+			else case "$key" in
+			termux-dialog-widget)
+				command -v termux-dialog&&case "$value" in
+				radio|spinner|sheet)
+					termux_widget="$value"
+					D=()
+					C=()
+					option(){
+						local i=${#C[@]}
+						local d="${2:-1}"
+						D[i]="${d//,/_}"
+						C[i]="$1"
+					}
+					menu(){
+						local q
+						q=$(IFS=,;termux-dialog "$termux_widget" -t "$1" -v "${D[*]}")||return $?
+						if [[ "$q" = *\"code\":\ -2* ]]
+						then return 2
+						elif [[ "$q" =~ \"index\":\ *([0-9]+)[^0-9] ]]
+						then
+							choice="${C[BASH_REMATCH[1]]}"
+							return 0
+						else return 1
+						fi
+					}
+					display=termux;;
+				*) [ -n "$testing" ]&&printf '# unknown widget: %s\n' "$value"
+				esac;;
+			dialog)
+				command -v dialog&&{
+					M=()
+					option(){
+						M[${#M[*]}]="$1"
+						M[${#M[*]}]="${2:-$1}"
+					}
+					menu(){
+						choice=$(dialog --title "Select Action" --menu "$1" 0 0 0 "${M[@]}")
+					}
+					display=dialog
+				};;
+			bash)
+				D=()
+				C=()
+				option(){
+					local i=${#C[@]}
+					D[i]="${2:-1}"
+					C[i]="$1"
+				}
+				menu(){
+					select _ in "${D[@]}"
+					do
+						if [[ "$REPLY" = *[^0-9]* ]]
+						then
+							local i
+							for ((i=0;i<${#C[@]};i++))
+							do
+								{ [ "$REPLY" = "${D[i]}" ]||[ "$REPLY" = "${C[i]}" ]
+								}&&choice="${C[i]}"&&return 0
+							done
+						elif ((REPLY>=1&&REPLY<=${#C[@]}))
+						then
+							choice="${C[REPLY-1]}"
+							return 0
+						fi
+					done
+					return 1
+				}
+				display=bash;;
+			esac
+			fi;;
+		both)
+			#shellcheck disable=SC2162
+			read c _ <<<"$value"
+			[ -n "$testing" ]&&printf '# finding %s...\n' "$c"
+			if [ "${c:0:1}" = / ]
+			then [ -x "$c" ]
+			else command -v "$c"
+			fi&&case "$c" in
+			wget)
+				if [[ $1 =~ ^(ht|f)tp: ]] || ! [[ "$(wget 2>&1)" =~ ^BusyBox ]]
+				then option "$value" "$key"
+				elif [ -n "$testing" ]
+				then printf '# BusyBox wget only does http or ftp.\n'
+				fi;;
+			pager|editor|www-browser) option "$value" "$key [default $c: $(realpath "$(command -v "$c")")]";;
+			*) option "$value" "$key"
+			esac;;
+		*) [ -n "$testing" ]&&printf '# ignoring section contents.\n'
+		esac
+	esac
+done >&11
+exec 11>&-
+} < <(
+	configfile="$(dirname -- "${BASH_SOURCE[0]}")/.termux-url-opener.conf"
+	printf %s\\n "${TERMUX_URL_OPENER_CONFIG:-$(cat "$configfile" 2>/dev/null||printf %s '
+# termux-url-opener and termux-file-editor config
+# see https://github.com/Quasic/termux-home-bin for details
+# To customize,
+# may be saved to '"$configfile"'
+# or exported to TERMUX_URL_OPENER_CONFIG
+
+[display]
+# the display section must come first
+# options in this section may be reordered for precedence
+# first read, first tried, empty valued lines are ignored
+
+# the following can be radio, sheet, or spinner
+# anything else disables it
+termux-dialog-widget=sheet
+
+# comment or delete this line, or add = to the end to not use dialog
+# "dialog" is same as "dialog=dialog"
+dialog
+
+# strongly recommended to have a bash line
+# at least as fallback
+bash
+
+[both]
+# option display name=command --options 
+# or name=/path/to/command --options
+# or just command --options
+copy to clipboard=termux-clipboard-set
+w3m pager/browser=w3m
+
+[file]
+editor
+pager
+sensible-editor
+nano
+The Nice Editor=ne
+Midnight Commander editor=mcedit
+Light emacs style editor=micro
+Neovim=nvim
+Vi iMproved=vim
+Viewer/Editor=vi
+sensible-pager
+more viewer=more
+less viewer=less
+add to project=prj file ""
+edit in app=termux-share -a edit
+send to app=termux-share -a send
+view in app=termux-share
+
+[url]
+browser=www-browser
+sensible-browser
+elinks
+lynx
+prj bookmark=prj url ""
+download with wget=wget
+download with curl=curl -O
+view in app=termux-open-url
+
+[both]
+share as text=termux-share -a send <<<
+view in app=termux-open --chooser
+send to app=termux-open --send --chooser
+test toast=termux-toast
+test echo=echo
+')}"
+)
+if [ "$2" = config ]
+then
+	printf '# Success!\n'
+	exit 0
+fi
+p="What to do with $ff $1"
+printf 'Please choose action:\n%s\n' "$p"
+if menu "$p"
+then
+	printf -v cmd "$choice %q" "$1"
+	printf %s\\n "$cmd"
+	eval "$cmd"
+else
+	printf 'Error %i\n%s\n' "$?" "$format: $1"
+	exit 1
+fi
