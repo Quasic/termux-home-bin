@@ -137,8 +137,7 @@ termux-url-opener http://example.com
 - Uninstall: remove the installed scripts from `~/bin` and restore your backups. You can also manually remove duckduckgo and prj from .../usr/bin.
 
 ## Tested & compatibility
-- Testing note: I now currently use this on Android 7 and 11. I tested Android 5 in the past. I had trouble on Android 7 (see issue #1) that caused me to refactor from a simple script to a state machine. If you test on another Android/Termux version, please report results in the issues.
-  - Issue: https://github.com/Quasic/termux-home-bin/issues/1
+- Testing note: I now currently use this on Android 7 and 11. I tested Android 5 in the past. I had trouble on Android 7 [See issue #1](https://github.com/Quasic/termux-home-bin/issues/1) that caused me to refactor from a simple script to a state machine. If you test on another Android/Termux version, please report results in the issues.
 
 ## Development & Contributing
 - Contributions welcome. Open an issue to discuss larger changes or submit a pull request for bug fixes and improvements.
