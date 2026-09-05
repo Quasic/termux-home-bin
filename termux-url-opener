@@ -48,9 +48,9 @@ a termux-clipboard-set "copy $T$TN to clipboard"
 a termux-share "share $T$TN as text" 'termux-share -a send <<<'
 a termux-open 'view in app' 'termux-open --chooser'
 a termux-open 'send to app' 'termux-open --send --chooser'
-if cmd=$(dialog --title "Select Action" --menu "What to do with $T $1" 0 0 0 "${M[@]}" echo test)
+if cmd=$(dialog --title "Select Action" --menu "What to do with $T $1" 0 0 0 "${M[@]}" echo test 2>&1 >/dev/tty)
 then
-	printf '%s %q' "$cmd" "$1"
+	printf -v cmd '%s %q' "$cmd" "$1"
 	eval "$cmd"
 else
 	printf 'Dialog error %i\n' $?
